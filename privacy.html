@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Dead Rule Privacy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Glegoo:wght@400;700&display=swap');
+
+  :root {
+    --ink: #241f18;
+    --ink-soft: #4a4234;
+    --ground: #efe9da;
+    --panel: #ffffff;
+    --panel-border: #ded3ba;
+    --olive: #5c7a2e;
+    --olive-deep: #3f571d;
+    --maroon: #7a3a3a;
+    --maroon-deep: #5c2929;
+    --accent-wash: #e4ddc7;
+    --focus: #7a3a3a;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #ece6d6;
+      --ink-soft: #beb49c;
+      --ground: #17140f;
+      --panel: #211c15;
+      --panel-border: #3a3226;
+      --olive: #9bc25a;
+      --olive-deep: #7fa843;
+      --maroon: #c97a7a;
+      --maroon-deep: #b56464;
+      --accent-wash: #2a2519;
+      --focus: #c97a7a;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ink: #ece6d6;
+    --ink-soft: #beb49c;
+    --ground: #17140f;
+    --panel: #211c15;
+    --panel-border: #3a3226;
+    --olive: #9bc25a;
+    --olive-deep: #7fa843;
+    --maroon: #c97a7a;
+    --maroon-deep: #b56464;
+    --accent-wash: #2a2519;
+    --focus: #c97a7a;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: 'Glegoo', Georgia, 'Times New Roman', serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding-block: 56px 96px;
+    padding-inline: 24px;
+  }
+
+  header.top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+
+  .brand .mark {
+    font-family: 'Bangers', 'Glegoo', cursive;
+    font-size: 28px;
+    letter-spacing: 0.03em;
+    color: var(--maroon-deep);
+    background: var(--accent-wash);
+    border: 2px solid var(--panel-border);
+    border-radius: 10px 4px 10px 4px;
+    padding: 4px 12px 6px;
+    line-height: 1;
+    transform: rotate(-2deg);
+  }
+
+  .lang-toggle {
+    display: inline-flex;
+    border: 1px solid var(--panel-border);
+    border-radius: 999px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .lang-toggle button {
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border: none;
+    background: var(--panel);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .lang-toggle button.active { background: var(--olive); color: #fff; }
+  .lang-toggle button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+  h1 {
+    font-family: 'Bangers', 'Glegoo', cursive;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    font-size: clamp(28px, 5vw, 38px);
+    color: var(--maroon-deep);
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+
+  .updated { font-size: 13px; color: var(--ink-soft); margin: 0 0 36px; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 16px 6px 16px 6px;
+    padding: 28px clamp(20px, 4vw, 36px);
+  }
+
+  h2 {
+    font-family: 'Glegoo', Georgia, serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--olive-deep);
+    margin: 32px 0 10px;
+    text-wrap: balance;
+  }
+
+  h2:first-child { margin-top: 0; }
+
+  p { margin: 0 0 14px; max-width: 62ch; color: var(--ink); overflow-wrap: anywhere; }
+
+  ul { margin: 0 0 14px; padding-left: 22px; max-width: 62ch; }
+  li { margin-bottom: 8px; overflow-wrap: anywhere; }
+
+  .callout {
+    background: var(--accent-wash);
+    border-left: 3px solid var(--maroon);
+    border-radius: 4px 10px 4px 10px;
+    padding: 14px 18px;
+    margin: 18px 0;
+    font-size: 14.5px;
+  }
+
+  .callout strong { color: var(--maroon-deep); }
+
+  a { color: var(--maroon-deep); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  a:hover { color: var(--maroon); }
+  a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+  footer { margin-top: 32px; font-size: 12.5px; color: var(--ink-soft); text-align: center; }
+
+  [data-lang-block] { display: none; }
+  [data-lang-block].shown { display: block; }
+
+  @media (max-width: 480px) {
+    header.top { flex-direction: column; }
+    .lang-toggle { align-self: flex-start; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="mark">DEAD RULE</span>
+    </div>
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" data-lang="es" class="active">Español</button>
+      <button type="button" data-lang="en">English</button>
+    </div>
+  </header>
+
+  <div data-lang-block data-lang="es" class="shown">
+    <h1>Política de Privacidad</h1>
+    <p class="updated">Última actualización: 11 de octubre de 2026</p>
+
+    <div class="card">
+      <h2>Resumen</h2>
+      <p><strong>DEAD RULE no tiene cuentas de usuario y no envía tus datos a ningún servidor propio.</strong> El progreso de tu partida se guarda solo en tu dispositivo. La app muestra anuncios de Google AdMob, y Google puede tratar algunos datos de tu dispositivo para mostrarlos, como se explica más abajo.</p>
+
+      <h2>Datos que se guardan en tu dispositivo</h2>
+      <p>Para jugar no hace falta conexión a internet ni iniciar sesión. Lo único que guarda la app es tu progreso (líderes, días sobrevividos, decisiones, misiones, idioma y volumen), y lo guarda <strong>únicamente en el almacenamiento local de tu teléfono</strong>. Si desinstalas la app o borras la partida desde el menú del juego, esos datos desaparecen.</p>
+      <p>No tenemos acceso a esos datos y no los recibimos.</p>
+
+      <h2>Anuncios (Google AdMob)</h2>
+      <p>La app muestra anuncios mediante Google AdMob, un servicio de Google. Para mostrarlos, Google puede recoger y tratar, entre otros, los siguientes datos de tu dispositivo:</p>
+      <ul>
+        <li>el identificador de publicidad de tu dispositivo,</li>
+        <li>tu dirección IP y una ubicación aproximada derivada de ella,</li>
+        <li>información del dispositivo y de la app (modelo, versión del sistema, idioma),</li>
+        <li>datos de interacción con los anuncios (cuándo se muestran, si se pulsan) y datos de diagnóstico.</li>
+      </ul>
+      <p>Estos datos los trata Google, bajo sus propias políticas, para servir y medir anuncios y prevenir fraude. Nosotros no los recibimos ni podemos consultarlos. Puedes ver cómo los trata Google en <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
+      <p>Los anuncios pueden llevar a páginas o tiendas de terceros. Cada una tiene sus propias condiciones y su propia política de privacidad, y no las controlamos.</p>
+
+      <h2>Consentimiento y tus opciones</h2>
+      <p>Si estás en el Espacio Económico Europeo, el Reino Unido o Suiza, antes de mostrar anuncios la app te presenta un formulario de consentimiento de Google. Puedes aceptar o rechazar. Si rechazas, los anuncios que veas serán menos relevantes o limitados.</p>
+      <p>En cualquier momento puedes, desde los ajustes de Android, restablecer o eliminar tu identificador de publicidad y desactivar la personalización de anuncios.</p>
+
+      <div class="callout">
+        <strong>No usamos:</strong> cuentas de usuario, analíticas propias ni de terceros distintas de las de anuncios descritas arriba (como Firebase), compras dentro de la app ni redes sociales. No vendemos datos.
+      </div>
+
+      <h2>Permisos del dispositivo</h2>
+      <p>La app usa el permiso de internet (para cargar anuncios), el acceso al identificador de publicidad (para mostrarlos) y la vibración (para el efecto háptico al decidir una carta). No pide acceso a la cámara, contactos, ubicación precisa, micrófono ni archivos personales.</p>
+
+      <h2>Contenido y edad recomendada</h2>
+      <p>DEAD RULE incluye humor negro, violencia estilizada, temática adulta y lenguaje explícito, indicado en la propia app antes de jugar. No está dirigida a menores de edad y no recopilamos a sabiendas datos de menores. Si crees que un menor usa la app, puedes escribirnos.</p>
+
+      <h2>Tus derechos</h2>
+      <p>Como no recibimos ni conservamos tus datos personales, no tenemos nada que consultar, corregir o borrar por nuestra parte. Los datos de publicidad los trata Google, y puedes ejercer tus derechos sobre ellos directamente ante Google. Para tu progreso de partida, basta con borrar la partida en la app o desinstalarla.</p>
+
+      <h2>Seguridad</h2>
+      <p>Tu progreso se guarda en tu dispositivo y su protección depende de la seguridad de tu propio teléfono. No podemos garantizar la seguridad de servicios de terceros como Google AdMob.</p>
+
+      <h2>Cambios en esta política</h2>
+      <p>Si esta política cambia, se actualizará esta misma página con la fecha de la revisión. Si sigues usando la app tras un cambio, aceptas la versión vigente.</p>
+
+      <h2>Contacto</h2>
+      <p>Para cualquier duda sobre esta política, puedes escribir a <a href="mailto:creapption.develoment@gmail.com">creapption.develoment@gmail.com</a>.</p>
+    </div>
+  </div>
+
+  <div data-lang-block data-lang="en">
+    <h1>Privacy Policy</h1>
+    <p class="updated">Last updated: October 11, 2026</p>
+
+    <div class="card">
+      <h2>Summary</h2>
+      <p><strong>DEAD RULE has no user accounts and does not send your data to any server of ours.</strong> Your game progress is saved only on your device. The app shows ads from Google AdMob, and Google may process some data from your device to show them, as explained below.</p>
+
+      <h2>Data stored on your device</h2>
+      <p>Playing needs no internet connection and no sign-in. The only thing the app saves is your progress (leaders, days survived, choices, missions, language and volume), and it is saved <strong>only in your phone's local storage</strong>. If you uninstall the app or delete your save from the in-game menu, that data is gone.</p>
+      <p>We do not have access to that data and we do not receive it.</p>
+
+      <h2>Ads (Google AdMob)</h2>
+      <p>The app shows ads through Google AdMob, a Google service. To show them, Google may collect and process the following data from your device, among others:</p>
+      <ul>
+        <li>your device's advertising identifier,</li>
+        <li>your IP address and an approximate location derived from it,</li>
+        <li>device and app information (model, system version, language),</li>
+        <li>ad interaction data (when ads are shown, whether they are tapped) and diagnostics.</li>
+      </ul>
+      <p>Google processes this data under its own policies, to serve and measure ads and prevent fraud. We do not receive it and cannot access it. You can see how Google handles it at <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">policies.google.com/technologies/partner-sites</a>.</p>
+      <p>Ads may lead to third-party pages or stores. Each has its own terms and privacy policy, which we do not control.</p>
+
+      <h2>Consent and your choices</h2>
+      <p>If you are in the European Economic Area, the United Kingdom or Switzerland, the app shows you a Google consent form before showing ads. You can accept or decline. If you decline, the ads you see will be less relevant or limited.</p>
+      <p>At any time you can, from Android settings, reset or delete your advertising ID and turn off ad personalization.</p>
+
+      <div class="callout">
+        <strong>We don't use:</strong> user accounts, our own or third-party analytics other than the ad services described above (such as Firebase), in-app purchases, or social features. We do not sell data.
+      </div>
+
+      <h2>Device permissions</h2>
+      <p>The app uses the internet permission (to load ads), access to the advertising ID (to show them) and vibration (for the haptic tap when you commit a card choice). It does not request access to your camera, contacts, precise location, microphone or personal files.</p>
+
+      <h2>Content and recommended age</h2>
+      <p>DEAD RULE contains black comedy, stylized violence, adult themes and explicit language, flagged in the app before you play. It is not directed at minors and we do not knowingly collect data from minors. If you believe a minor is using the app, you can write to us.</p>
+
+      <h2>Your rights</h2>
+      <p>Because we do not receive or keep your personal data, we have nothing to access, correct or delete on our side. Advertising data is processed by Google, and you can exercise your rights over it directly with Google. For your game progress, delete the save in the app or uninstall it.</p>
+
+      <h2>Security</h2>
+      <p>Your progress is stored on your device and its protection depends on the security of your own phone. We cannot guarantee the security of third-party services such as Google AdMob.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If this policy changes, this same page will be updated with the revision date. By continuing to use the app after a change, you accept the current version.</p>
+
+      <h2>Contact</h2>
+      <p>For any questions about this policy, you can write to <a href="mailto:creapption.develoment@gmail.com">creapption.develoment@gmail.com</a>.</p>
+    </div>
+  </div>
+
+  <footer>DEAD RULE — Creapption</footer>
+</div>
+
+<script>
+  (function () {
+    var buttons = document.querySelectorAll('.lang-toggle button');
+    var blocks = document.querySelectorAll('[data-lang-block]');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var lang = btn.getAttribute('data-lang');
+        buttons.forEach(function (b) { b.classList.toggle('active', b === btn); });
+        blocks.forEach(function (b) {
+          b.classList.toggle('shown', b.getAttribute('data-lang') === lang);
+        });
+      });
+    });
+  })();
+</script>
+
+</html>
